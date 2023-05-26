@@ -37,9 +37,9 @@ public class GameScreen implements Screen {
 
         batch.setProjectionMatrix(camera.combined);
 
-        game.batch.begin();
+        batch.begin();
         batch.draw(Assets.sprite_back, 0 , 0);
-        game.batch.end();
+        batch.end();
     }
     @Override
     public void show () {
