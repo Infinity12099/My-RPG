@@ -32,8 +32,8 @@ public class GameScreen implements Screen {
 
     Sprite Player_stand_down_sprite1;
 
-    public static final int PLAYER_WIDTH = 39;
-    public static final int PLAYER_HEIGHT = 63;
+    public static final int PLAYER_WIDTH = 13*5;
+    public static final int PLAYER_HEIGHT = 21*5;
     public static final int PlAYER_WIDTH_PIXEL = 13;
     public static final int PlAYER_HEIGHT_PIXEL = 21;
 
@@ -53,7 +53,7 @@ public class GameScreen implements Screen {
         stand_down = 2;
         stand_down_a = new Animation[5];
 
-        TextureRegion[][] player_stand_downSpriteSheet = TextureRegion.split(new Texture("PLAYER_DOWNSTADSPRITESHEET.png"), PlAYER_WIDTH_PIXEL, PlAYER_HEIGHT_PIXEL);
+        TextureRegion[][] player_stand_downSpriteSheet = TextureRegion.split(new Texture("Player/PLAYER_DOWN_STANDSPRITESHEET.png"), PlAYER_WIDTH_PIXEL, PlAYER_HEIGHT_PIXEL);
 
         stand_down_a[stand_down] = new Animation(PLAYER_ANIMATION_SPEED, player_stand_downSpriteSheet[0]);
 
@@ -107,7 +107,8 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.A)){
             PlayerX-=SPEED * Gdx.graphics.getDeltaTime();
         }
-        batch.draw(stand_down_a[stand_down].getKeyFrame(stateTime,true),PlayerX,PlayerY, PLAYER_WIDTH, PLAYER_HEIGHT);
+
+        batch.draw((TextureRegion) stand_down_a[stand_down].getKeyFrame(stateTime,true),PlayerX,PlayerY, PLAYER_WIDTH, PLAYER_HEIGHT);
         //for (int i = 0; i<1920; i+=16) {
             //for (int j = 0; j<1080; j+=16) {
                 //switch (rand.nextInt(2)) {
