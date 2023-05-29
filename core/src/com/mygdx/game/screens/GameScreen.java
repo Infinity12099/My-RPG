@@ -24,13 +24,9 @@ public class GameScreen implements Screen {
     OrthographicCamera camera;
     SpriteBatch batch;
     Random rand;
-    Texture Player_stand_down1;
-    Texture Player_stand_down2;
-    Texture Player_stand_down3;
-    Texture Player_stand_down4;
-    Texture Player_stand_down5;
 
-    Sprite Player_stand_down_sprite1;
+
+
 
     public static final int PLAYER_WIDTH = 13*5;
     public static final int PLAYER_HEIGHT = 21*5;
@@ -38,36 +34,70 @@ public class GameScreen implements Screen {
     public static final int PlAYER_HEIGHT_PIXEL = 21;
 
     Animation[] stand_down_a;
+    Animation[] stand_right_a;
+    Animation[] stand_left_a;
+    Animation[] stand_up_a;
+    Animation[] walk_down_a;
+    Animation[] walk_right_a;
+    Animation[] walk_left_a;
+    Animation[] walk_up_a;
     float PlayerX;
     float PlayerY;
     int stand_down;
+    int stand_right;
+    int stand_left;
+    int stand_up;
+    int walk_down;
+    int walk_right;
+    int walk_left;
+    int walk_up;
     float stateTime;
+
+    String was_keypressed;
     public static float SPEED = 500;
 
-    public static final  float PLAYER_ANIMATION_SPEED = 0.5f;
+    public static final  float PLAYER_ANIMATION_SPEED = 0.2f;
 
     public GameScreen (RPGAdventure game) {
         this.game = game;
         PlayerY = 15;
         PlayerX = WINDOW_WIDTH/2-PLAYER_WIDTH/2;
         stand_down = 2;
+        stand_right = 2;
+        stand_left = 2;
+        stand_up = 2;
+        walk_down = 0;
+        walk_right = 0;
+        walk_left = 0;
+        walk_up = 0;
         stand_down_a = new Animation[5];
+        stand_right_a = new Animation[5];
+        stand_left_a = new Animation[5];
+        stand_up_a = new Animation[5];
+        walk_down_a = new Animation[6];
+        walk_right_a = new Animation[6];
+        walk_left_a = new Animation[6];
+        walk_up_a = new Animation[6];
 
         TextureRegion[][] player_stand_downSpriteSheet = TextureRegion.split(new Texture("Player/PLAYER_DOWN_STANDSPRITESHEET.png"), PlAYER_WIDTH_PIXEL, PlAYER_HEIGHT_PIXEL);
-
+        TextureRegion[][] player_stand_rightSpriteSheet = TextureRegion.split(new Texture("Player/PLAYER_RIGHT_STANDSPRITESHEET.png"), 15, PlAYER_HEIGHT_PIXEL);
+        TextureRegion[][] player_stand_leftSpriteSheet = TextureRegion.split(new Texture("Player/PLAYER_LEFT_STANDSPRITESHEET.png"), 15, PlAYER_HEIGHT_PIXEL);
+        TextureRegion[][] player_stand_upSpriteSheet = TextureRegion.split(new Texture("Player/PLAYER_UP_STANDSPRITESHEET.png"), PlAYER_WIDTH_PIXEL, PlAYER_HEIGHT_PIXEL);
+        TextureRegion[][] player_walk_downSpriteSheet = TextureRegion.split(new Texture("Player/PLAYER_DOWN_WALKSPRITESHEET.png"), PlAYER_WIDTH_PIXEL, 23);
+        TextureRegion[][] player_walk_rightSpriteSheet = TextureRegion.split(new Texture("Player/PLAYER_RIGHT_WALKSPRITESHEET.png"), 15, 23);
+        TextureRegion[][] player_walk_leftSpriteSheet = TextureRegion.split(new Texture("Player/PLAYER_LEFT_WALKSPRITESHEET.png"), 15, 23);
+        TextureRegion[][] player_walk_upSpriteSheet = TextureRegion.split(new Texture("Player/PLAYER_UP_WALKSPRITESHEET.png"), 13, 22);
         stand_down_a[stand_down] = new Animation(PLAYER_ANIMATION_SPEED, player_stand_downSpriteSheet[0]);
+        stand_right_a[stand_right] = new Animation(PLAYER_ANIMATION_SPEED, player_stand_rightSpriteSheet[0]);
+        stand_left_a[stand_left] = new Animation(PLAYER_ANIMATION_SPEED, player_stand_leftSpriteSheet[0]);
+        stand_up_a[stand_up] = new Animation(PLAYER_ANIMATION_SPEED, player_stand_upSpriteSheet[0]);
+        walk_down_a[walk_down] = new Animation(PLAYER_ANIMATION_SPEED, player_walk_downSpriteSheet[0]);
+        walk_right_a[walk_right] = new Animation(PLAYER_ANIMATION_SPEED, player_walk_rightSpriteSheet[0]);
+        walk_left_a[walk_left] = new Animation(PLAYER_ANIMATION_SPEED, player_walk_leftSpriteSheet[0]);
+        walk_up_a[walk_up] = new Animation(PLAYER_ANIMATION_SPEED, player_walk_upSpriteSheet[0]);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(true, 1920, 1080);
-
-        Player_stand_down1 = new Texture("Player/Player_stand_down1.png");
-        Player_stand_down_sprite1 = new Sprite(Player_stand_down1);
-        Player_stand_down_sprite1.flip(false, true);
-        Player_stand_down2 = new Texture("Player/Player_stand_down2.png");
-        Player_stand_down3 = new Texture("Player/Player_stand_down3.png");
-        Player_stand_down4 = new Texture("Player/Player_stand_down4.png");
-        Player_stand_down5 = new Texture("Player/Player_stand_down5.png");
-
 
 
         batch = new SpriteBatch();
@@ -97,18 +127,44 @@ public class GameScreen implements Screen {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
             PlayerY-=SPEED * Gdx.graphics.getDeltaTime();
+            was_keypressed = "W";
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)){
             PlayerY+=SPEED * Gdx.graphics.getDeltaTime();
+            was_keypressed = "S";
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)){
             PlayerX+=SPEED * Gdx.graphics.getDeltaTime();
+            was_keypressed = "D";
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)){
             PlayerX-=SPEED * Gdx.graphics.getDeltaTime();
+            was_keypressed = "A";
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)){
+            batch.draw((TextureRegion) walk_down_a[walk_down].getKeyFrame(stateTime, true), PlayerX, PlayerY, PLAYER_WIDTH, 23*5);
+        }else if (Gdx.input.isKeyPressed(Input.Keys.W)){
+            batch.draw((TextureRegion) walk_up_a[walk_up].getKeyFrame(stateTime, true), PlayerX, PlayerY, PLAYER_WIDTH, 22*5);
+        }else if (Gdx.input.isKeyPressed(Input.Keys.D)){
+            batch.draw((TextureRegion) walk_right_a[walk_right].getKeyFrame(stateTime, true), PlayerX, PlayerY, 15*5, 23*5);
+        }else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            batch.draw((TextureRegion) walk_left_a[walk_left].getKeyFrame(stateTime, true), PlayerX, PlayerY, 15*5, 23*5);
+        }else if (was_keypressed == "S") {
+                batch.draw((TextureRegion) stand_down_a[stand_down].getKeyFrame(stateTime, true), PlayerX, PlayerY, PLAYER_WIDTH, PLAYER_HEIGHT);
+                was_keypressed = "S";
+            } else if (was_keypressed == "D") {
+                batch.draw((TextureRegion) stand_right_a[stand_right].getKeyFrame(stateTime, true), PlayerX, PlayerY, 15 * 5, PLAYER_HEIGHT);
+                was_keypressed = "D";
+            } else if (was_keypressed == "A") {
+                batch.draw((TextureRegion) stand_left_a[stand_left].getKeyFrame(stateTime, true), PlayerX, PlayerY, 15 * 5, PLAYER_HEIGHT);
+                was_keypressed = "A";
+            } else if (was_keypressed == "W") {
+                batch.draw((TextureRegion) stand_up_a[stand_up].getKeyFrame(stateTime, true), PlayerX, PlayerY, PLAYER_WIDTH, PLAYER_HEIGHT);
+                was_keypressed = "W";
+            } else {
+                batch.draw((TextureRegion) stand_down_a[stand_down].getKeyFrame(stateTime, true), PlayerX, PlayerY, PLAYER_WIDTH, PLAYER_HEIGHT);
+            }
 
-        batch.draw((TextureRegion) stand_down_a[stand_down].getKeyFrame(stateTime,true),PlayerX,PlayerY, PLAYER_WIDTH, PLAYER_HEIGHT);
         //for (int i = 0; i<1920; i+=16) {
             //for (int j = 0; j<1080; j+=16) {
                 //switch (rand.nextInt(2)) {
