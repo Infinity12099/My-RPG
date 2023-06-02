@@ -11,7 +11,10 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Assets;
 import com.mygdx.game.RPGAdventure;
 
@@ -25,7 +28,7 @@ public class GameScreen implements Screen {
     SpriteBatch batch;
     Random rand;
 
-
+    Viewport viewport;
 
 
     public static final int PLAYER_WIDTH = 13*5;
@@ -60,6 +63,9 @@ public class GameScreen implements Screen {
 
     public GameScreen (RPGAdventure game) {
         this.game = game;
+        viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+        viewport.apply(true);
         PlayerY = 15;
         PlayerX = WINDOW_WIDTH/2-PLAYER_WIDTH/2;
         stand_down = 2;
@@ -119,6 +125,8 @@ public class GameScreen implements Screen {
 
         batch.setProjectionMatrix(camera.combined);
 
+        Vector2 unprojected = viewport.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+
         batch.begin();
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)){
             SPEED=600;
@@ -128,18 +136,30 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
             PlayerY-=SPEED * Gdx.graphics.getDeltaTime();
             was_keypressed = "W";
+            if (PlayerY + PLAYER_HEIGHT > Gdx.graphics.getHeight()) {
+                PlayerY = Gdx.graphics.getHeight() - PLAYER_HEIGHT;
+            }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)){
             PlayerY+=SPEED * Gdx.graphics.getDeltaTime();
             was_keypressed = "S";
+            if (PlayerY < 0) {
+                PlayerY = 0;
+            }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)){
             PlayerX+=SPEED * Gdx.graphics.getDeltaTime();
             was_keypressed = "D";
+            if (PlayerX + 15*5 > Gdx.graphics.getWidth()){
+                PlayerX = Gdx.graphics.getWidth() - 15*5;
+            }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)){
             PlayerX-=SPEED * Gdx.graphics.getDeltaTime();
             was_keypressed = "A";
+            if (PlayerX < 0){
+                PlayerX = 0;
+            }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)){
             batch.draw((TextureRegion) walk_down_a[walk_down].getKeyFrame(stateTime, true), PlayerX, PlayerY, PLAYER_WIDTH, 23*5);

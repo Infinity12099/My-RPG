@@ -54,7 +54,7 @@ public class MainMenuScreen implements Screen {
 
         int x = (WINDOW_WITH - PLAY_BUTTON_WITH) / 2;
         Vector2 unprojected = viewport.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-        float wX = unprojected.x;
+         float wX = unprojected.x;
         float wY = unprojected.y;
         if (wX > x && wX < x + PLAY_BUTTON_WITH && wY < PlAY_BUTTON_Y + PLAY_BUTTON_HEIGHT && wY > PlAY_BUTTON_Y) {
             game.batch.draw(playButtonActive, (WINDOW_WITH - PLAY_BUTTON_WITH) / 2, PlAY_BUTTON_Y, PLAY_BUTTON_WITH, PLAY_BUTTON_HEIGHT);
